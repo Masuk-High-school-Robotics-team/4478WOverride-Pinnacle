@@ -1,23 +1,167 @@
+
 #include "menu.hpp"
 #include "autons.hpp"
+#include "liblvgl/lvgl.h"
+#include <string>
 
-// screen object
 lv_obj_t* main_screen = nullptr;
+lv_obj_t* type_screen = nullptr;
+lv_obj_t* slot_screen = nullptr;
 
-// placeholder for debug
+//ui
+static lv_obj_t* slot_btns[4];
+static lv_obj_t* slot_labels[4];
+static lv_obj_t* slot_title_label = nullptr;
+
+//event callbacks
+
+//debug button, nothing yet will add later
 static void debug_btn_event_cb(lv_event_t* e) {
 
 }
 
-
-// callback when VEX override is clicked
+//main to tpe
 static void vex_override_btn_event_cb(lv_event_t* e) {
     current_mode = VEX_OVERRIDE;
+    open_type_screen();
 }
 
-//callback when RECF pinnacle
 static void recf_btn_event_cb(lv_event_t* e) {
     current_mode = RECF_PINNACLE;
+    open_type_screen();
+}
+
+//type to slot
+static void match_btn_event_cb(lv_event_t* e) {
+    current_type = MATCH;
+    open_slot_screen();
+}
+
+static void skills_btn_event_cb(lv_event_t* e) {
+    current_type = SKILLS;
+    open_slot_screen();
+}
+
+//back buttons
+static void back_to_main_cb(lv_event_t* e) {
+    lv_screen_load(main_screen);
+}
+
+static void back_to_type_cb(lv_event_t* e) {
+    lv_screen_load(type_screen);
+}
+
+//slot selection
+static void slot_btn_event_cb(lv_event_t* e) {
+    uintptr_t slot_idx = (uintptr_t)lv_event_get_user_data(e);
+    current_slot = static_cast<int>(slot_idx);
+
+    //standby
+}
+
+//screen creation functions
+
+void open_type_screen() {
+    if (type_screen == nullptr) {
+        type_screen = lv_obj_create(NULL);
+
+        //header label
+        lv_obj_t* title = lv_label_create(type_screen);
+        lv_label_set_text(title, "Select Match Type");
+        lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 10);
+
+        //back
+        lv_obj_t* back_btn = lv_button_create(type_screen);
+        lv_obj_set_size(back_btn, 70, 32);
+        lv_obj_align(back_btn, LV_ALIGN_TOP_LEFT, 10, 5);
+        lv_obj_add_event_cb(back_btn, back_to_main_cb, LV_EVENT_CLICKED, NULL);
+        
+        lv_obj_t* back_lbl = lv_label_create(back_btn);
+        lv_label_set_text(back_lbl, "< Back");
+        lv_obj_center(back_lbl);
+
+        //match
+        lv_obj_t* match_btn = lv_button_create(type_screen);
+        lv_obj_set_size(match_btn, 210, 160);
+        lv_obj_align(match_btn, LV_ALIGN_LEFT_MID, 15, 20);
+        lv_obj_add_event_cb(match_btn, match_btn_event_cb, LV_EVENT_CLICKED, NULL);
+
+        lv_obj_t* match_lbl = lv_label_create(match_btn);
+        lv_label_set_text(match_lbl, "MATCH AUTON");
+        lv_obj_center(match_lbl);
+
+        //skills
+        lv_obj_t* skills_btn = lv_button_create(type_screen);
+        lv_obj_set_size(skills_btn, 210, 160);
+        lv_obj_align(skills_btn, LV_ALIGN_RIGHT_MID, -15, 20);
+        lv_obj_add_event_cb(skills_btn, skills_btn_event_cb, LV_EVENT_CLICKED, NULL);
+
+        lv_obj_t* skills_lbl = lv_label_create(skills_btn);
+        lv_label_set_text(skills_lbl, "SKILLS AUTON");
+        lv_obj_center(skills_lbl);
+    }
+
+    lv_screen_load(type_screen);
+}
+
+void open_slot_screen() {
+    if (slot_screen == nullptr) {
+        slot_screen = lv_obj_create(NULL);
+
+        //title header
+        slot_title_label = lv_label_create(slot_screen);
+        lv_obj_align(slot_title_label, LV_ALIGN_TOP_MID, 0, 10);
+
+        //back button
+        lv_obj_t* back_btn = lv_button_create(slot_screen);
+        lv_obj_set_size(back_btn, 70, 32);
+        lv_obj_align(back_btn, LV_ALIGN_TOP_LEFT, 10, 5);
+        lv_obj_add_event_cb(back_btn, back_to_type_cb, LV_EVENT_CLICKED, NULL);
+        
+        lv_obj_t* back_lbl = lv_label_create(back_btn);
+        lv_label_set_text(back_lbl, "< Back");
+        lv_obj_center(back_lbl);
+
+        //2x2 grid
+        int btn_w = 210;
+        int btn_h = 75;
+        int x_off[4] = {15, 255, 15, 255};
+        int y_off[4] = {50, 50, 140, 140};
+
+        for (int i = 0; i < 4; i++) {
+            slot_btns[i] = lv_button_create(slot_screen);
+            lv_obj_set_size(slot_btns[i], btn_w, btn_h);
+            lv_obj_set_pos(slot_btns[i], x_off[i], y_off[i]);
+            lv_obj_add_event_cb(slot_btns[i], slot_btn_event_cb, LV_EVENT_CLICKED, (void*)(uintptr_t)i);
+
+            slot_labels[i] = lv_label_create(slot_btns[i]);
+            lv_obj_center(slot_labels[i]);
+        }
+    }
+
+    // Refresh Title Text (e.g., "VEX - MATCH - Choose Slot")
+    std::string mode_str = (current_mode == VEX_OVERRIDE) ? "VEX" : "RECF";
+    std::string type_str = (current_type == MATCH) ? "MATCH" : "SKILLS";
+    std::string title_text = mode_str + " - " + type_str + " - Select Slot";
+    lv_label_set_text(slot_title_label, title_text.c_str());
+
+    //slot names
+    for (int i = 0; i < 4; i++) {
+        //
+        autonSlot slot = autons[current_mode][current_type][i];
+
+        if (slot.auton_fn != nullptr) {
+            std::string btn_txt = "Slot " + std::to_string(i + 1) + ":\n" + slot.name;
+            lv_label_set_text(slot_labels[i], btn_txt.c_str());
+            lv_obj_remove_state(slot_btns[i], LV_STATE_DISABLED);
+        } else {
+            std::string btn_txt = "Slot " + std::to_string(i + 1) + ":\nNothing Saved";
+            lv_label_set_text(slot_labels[i], btn_txt.c_str());
+            lv_obj_add_state(slot_btns[i], LV_STATE_DISABLED);
+        }
+    }
+
+    lv_screen_load(slot_screen);
 }
 
 void init_brain_menu() {
