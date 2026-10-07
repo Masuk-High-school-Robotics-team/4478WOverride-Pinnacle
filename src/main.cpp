@@ -1,6 +1,7 @@
 #include "../include/main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "autons.hpp"
+#include "menu.hpp"
 
 /**
  * A callback function for LLEMU's center button.
@@ -25,10 +26,14 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	/*
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
+	*/
+
+	init_brain_menu();
 }
 
 /**
