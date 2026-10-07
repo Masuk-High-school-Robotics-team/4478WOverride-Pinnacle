@@ -68,19 +68,25 @@ void open_type_screen() {
         //header label
         lv_obj_t* title = lv_label_create(type_screen);
         lv_label_set_text(title, "Select Match Type");
-        lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 10);
+        lv_obj_align(title, LV_ALIGN_TOP_LEFT, 15, 12);
 
-        //back
+        //back button
         lv_obj_t* back_btn = lv_button_create(type_screen);
-        lv_obj_set_size(back_btn, 70, 32);
-        lv_obj_align(back_btn, LV_ALIGN_TOP_LEFT, 10, 5);
+        lv_obj_set_size(back_btn, 90, 36);
+        lv_obj_align(back_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
         lv_obj_add_event_cb(back_btn, back_to_main_cb, LV_EVENT_CLICKED, NULL);
         
         lv_obj_t* back_lbl = lv_label_create(back_btn);
         lv_label_set_text(back_lbl, "< Back");
         lv_obj_center(back_lbl);
 
-        //match
+        //seperator line
+        static lv_point_t line_points[] = { {0, 42}, {480, 42} };
+        lv_obj_t* line = lv_line_create(type_screen);
+        lv_obj_set_size(line, 480, 2);
+        lv_obj_set_pos(line, 0, 42);
+
+        //match button
         lv_obj_t* match_btn = lv_button_create(type_screen);
         lv_obj_set_size(match_btn, 210, 160);
         lv_obj_align(match_btn, LV_ALIGN_LEFT_MID, 15, 20);
@@ -90,7 +96,7 @@ void open_type_screen() {
         lv_label_set_text(match_lbl, "MATCH AUTON");
         lv_obj_center(match_lbl);
 
-        //skills
+        //skills button
         lv_obj_t* skills_btn = lv_button_create(type_screen);
         lv_obj_set_size(skills_btn, 210, 160);
         lv_obj_align(skills_btn, LV_ALIGN_RIGHT_MID, -15, 20);
@@ -110,19 +116,25 @@ void open_slot_screen() {
 
         //title header
         slot_title_label = lv_label_create(slot_screen);
-        lv_obj_align(slot_title_label, LV_ALIGN_TOP_MID, 0, 10);
+        lv_obj_align(slot_title_label, LV_ALIGN_TOP_LEFT, 15, 12);
 
         //back button
         lv_obj_t* back_btn = lv_button_create(slot_screen);
-        lv_obj_set_size(back_btn, 70, 32);
-        lv_obj_align(back_btn, LV_ALIGN_TOP_LEFT, 10, 5);
+        lv_obj_set_size(back_btn, 90, 36);
+        lv_obj_align(back_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
         lv_obj_add_event_cb(back_btn, back_to_type_cb, LV_EVENT_CLICKED, NULL);
         
         lv_obj_t* back_lbl = lv_label_create(back_btn);
         lv_label_set_text(back_lbl, "< Back");
         lv_obj_center(back_lbl);
 
-        //2x2 grid
+        //seperator line
+        static lv_point_t line_points[] = { {0, 42}, {480, 42} };
+        lv_obj_t* line = lv_line_create(slot_screen);
+        lv_obj_set_size(line, 480, 2);
+        lv_obj_set_pos(line, 0, 42);
+
+        //2x2 slot
         int btn_w = 210;
         int btn_h = 75;
         int x_off[4] = {15, 255, 15, 255};
@@ -139,15 +151,14 @@ void open_slot_screen() {
         }
     }
 
-    // Refresh Title Text (e.g., "VEX - MATCH - Choose Slot")
+    //refresh 
     std::string mode_str = (current_mode == VEX_OVERRIDE) ? "VEX" : "RECF";
     std::string type_str = (current_type == MATCH) ? "MATCH" : "SKILLS";
     std::string title_text = mode_str + " - " + type_str + " - Select Slot";
     lv_label_set_text(slot_title_label, title_text.c_str());
 
-    //slot names
+    //names
     for (int i = 0; i < 4; i++) {
-        //
         autonSlot slot = autons[current_mode][current_type][i];
 
         if (slot.auton_fn != nullptr) {
