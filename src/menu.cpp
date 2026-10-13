@@ -7,6 +7,7 @@
 lv_obj_t* main_screen = nullptr;
 lv_obj_t* type_screen = nullptr;
 lv_obj_t* slot_screen = nullptr;
+lv_obj_t* standby_screen = nullptr;
 
 //ui
 static lv_obj_t* slot_btns[4];
@@ -57,6 +58,7 @@ static void slot_btn_event_cb(lv_event_t* e) {
     current_slot = static_cast<int>(slot_idx);
 
     //standby
+    open_standby_screen();
 }
 
 //screen creation functions
@@ -110,6 +112,74 @@ void open_type_screen() {
     lv_screen_load(type_screen);
 }
 
+//standby screen
+
+static lv_obj_t* armed_routine_label = nullptr;
+static lv_obj_t* warning_drawer_label = nullptr;
+
+void open_standby_screen() {
+    if (standby_screen == nullptr) {
+        standby_screen = lv_obj_create(NULL);
+
+        //header
+        lv_obj_t* title = lv_label_create(standby_screen);
+        lv_label_set_text(title, "AUTON ARMED & READY");
+        lv_obj_align(title, LV_ALIGN_TOP_LEFT, 15, 12);
+
+        //change auton
+        lv_obj_t* reselect_btn = lv_button_create(standby_screen);
+        lv_obj_set_size(reselect_btn, 85, 36);
+        lv_obj_align(reselect_btn, LV_ALIGN_TOP_RIGHT, -110, 5);
+        lv_obj_add_event_cb(reselect_btn, back_to_type_cb, LV_EVENT_CLICKED, NULL);
+
+        lv_obj_t* reselect_lbl = lv_label_create(reselect_btn);
+        lv_label_set_text(reselect_lbl, "< Change");
+        lv_obj_center(reselect_lbl);
+
+        //debug shortcut
+        lv_obj_t* debug_btn = lv_button_create(standby_screen);
+        lv_obj_set_size(debug_btn, 90, 36);
+        lv_obj_align(debug_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
+        lv_obj_add_event_cb(debug_btn, debug_btn_event_cb, LV_EVENT_CLICKED, NULL);
+
+        lv_obj_t* debug_lbl = lv_label_create(debug_btn);
+        lv_label_set_text(debug_lbl, "DEBUG");
+        lv_obj_center(debug_lbl);
+
+        //line
+        lv_obj_t* line = lv_obj_create(standby_screen);
+        lv_obj_set_size(line, 480, 2);
+        lv_obj_set_pos(line, 0, 42);
+
+        //
+        lv_obj_t* armed_card = lv_obj_create(standby_screen);
+        lv_obj_set_size(armed_card, 450, 75);
+        lv_obj_align(armed_card, LV_ALIGN_TOP_MID, 0, 50);
+
+        armed_routine_label = lv_label_create(armed_card);
+        lv_obj_center(armed_routine_label);
+
+        //warning
+        lv_obj_t* warning_box = lv_obj_create(standby_screen);
+        lv_obj_set_size(warning_box, 450, 85);
+        lv_obj_align(warning_box, LV_ALIGN_BOTTOM_MID, 0, -10);
+
+        warning_drawer_label = lv_label_create(warning_box);
+        lv_label_set_text(warning_drawer_label, "System Status: Checking hardware...");
+        lv_obj_align(warning_drawer_label, LV_ALIGN_TOP_LEFT, 5, 5);
+    }
+
+    //update armed label
+    autonSlot selected = autons[current_mode][current_type][current_slot];
+    std::string mode_str = (current_mode == VEX_OVERRIDE) ? "VEX" : "RECF";
+    std::string type_str = (current_type == MATCH) ? "Match" : "Skills";
+    std::string armed_text = "ARMED [" + mode_str + " " + type_str + " S" + std::to_string(current_slot + 1) + "]:\n" + selected.name;
+    
+    lv_label_set_text(armed_routine_label, armed_text.c_str());
+
+    lv_screen_load(standby_screen);
+}
+
 void open_slot_screen() {
     if (slot_screen == nullptr) {
         slot_screen = lv_obj_create(NULL);
@@ -150,6 +220,8 @@ void open_slot_screen() {
             lv_obj_center(slot_labels[i]);
         }
     }
+
+    
 
     //refresh 
     std::string mode_str = (current_mode == VEX_OVERRIDE) ? "VEX" : "RECF";
