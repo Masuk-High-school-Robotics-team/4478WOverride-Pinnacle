@@ -86,43 +86,25 @@ void autonomous() {
 
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::MotorGroup left_mg({1, -2, 3}, pros::MotorGearset::blue);    //motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({-4, 5, -6}, pros::MotorGearset::blue);  //motor group with forwards port 5 and reversed ports 4 & 6
+	pros::MotorGroup left_mg({2, -4, 8}, pros::MotorGearset::blue);
+	pros::MotorGroup right_mg({-12, 13, -15}, pros::MotorGearset::blue);
 	
-	lemlib::ExpoDriveCurve throttle_curve(5, 0, 1.014); //the curve for forward/backward
-    lemlib::ExpoDriveCurve steer_curve(5, 0, 1.014);    //curve for turning
-	// deadband: joystick values below this threshold output 0 to prevent stick drift
-	// minOutput: the minimum power sent to motors as soon as you move past the deadband to overcome initial friction
-	// curveGain: controls how steep the logarithmic curve is, higher numbers increase fine-control sensitivity 
-	//            near the center while maintaining maximum speed at full stick extension
+	lemlib::ExpoDriveCurve left_drive_curve(5, 0, 1.014);
+	lemlib::ExpoDriveCurve right_drive_curve(5, 0, 1.014);
 
 	while (true) {
 
-		//eead raw joystick inputs (-127 to 127)
-        int raw_y = master.get_analog(ANALOG_LEFT_Y);
-        int raw_x = master.get_analog(ANALOG_RIGHT_X);
+		const int left_input = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		const int right_input = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
 
-        //apply curve and convert result to integer
-        int scaled_dir = static_cast<int>(throttle_curve.curve(raw_y));
-        int scaled_turn = static_cast<int>(steer_curve.curve(raw_x));
+		const int left_power = static_cast<int>(left_drive_curve.curve(left_input));
+		const int right_power = static_cast<int>(right_drive_curve.curve(right_input));
 
-        //set motor speeds
-        left_mg.move(scaled_dir - scaled_turn);
-        right_mg.move(scaled_dir + scaled_turn);
+		left_mg.move(left_power);
+		right_mg.move(right_power);
 
 
 
-		/*
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
-
-		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left_mg.move(dir - turn);                      // Sets left motor voltage
-		right_mg.move(dir + turn);                     // Sets right motor voltage
-		*/
-		pros::delay(20);                               // Run for 20 ms then update
+		pros::delay(20);
 	}
 }
