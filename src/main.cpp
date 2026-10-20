@@ -103,7 +103,8 @@ lemlib::Chassis chassis(drivetrain,
 
 
 void initialize() {
-	lcd::initialize(); // initialize brain screen
+	//lcd::initialize(); // initialize brain screen
+    init_brain_menu();
     chassis.calibrate(); // calibrate sensors
     // print position to brain screen
 }
@@ -164,8 +165,8 @@ void opcontrol() {
 	while (true) {
 
 		// get left y and right y positions
-        int leftY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
-        int rightY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+        int leftY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
 
         // move the robot
         chassis.tank(leftY, rightY);
