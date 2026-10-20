@@ -12,9 +12,9 @@ using namespace pros;
 
 Controller master(E_CONTROLLER_MASTER);
  // left motor group
-MotorGroup right_mg({2, -4, 8}, MotorGearset::blue);
+MotorGroup right_mg({-2, 4, -8}, MotorGearset::blue);
 // right motor group
-MotorGroup left_mg({-12, 13, -15}, MotorGearset::blue);
+MotorGroup left_mg({12, -13, 15}, MotorGearset::blue);
 
 
 // drivetrain settings
@@ -160,8 +160,8 @@ void opcontrol() {
 	while (true) {
 
 		// get left y and right y positions
-        int leftY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+        int leftY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+        int rightY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
 
         // move the robot
         chassis.tank(leftY, rightY);
