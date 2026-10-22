@@ -13,13 +13,16 @@ using namespace pros;
  * "I was pressed!" and nothing.
  */
 
-Controller master(E_CONTROLLER_MASTER);
+Controller controller1(E_CONTROLLER_MASTER);
  // left motor group
 MotorGroup right_mg({2, -4, 8}, MotorGearset::blue);
 // right motor group
 MotorGroup left_mg({-12, 13, -15}, MotorGearset::blue);
 
 pros::adi::Pneumatics claw('A', false); //initally closed
+
+// cascade lift motors
+MotorGroup lift({5, -6}, MotorGearset::green);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
@@ -167,14 +170,23 @@ void opcontrol() {
 	while (true) {
 
 		// get left y and right y positions
-        int leftY = master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+        int leftY = controller1.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightY = controller1.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
 
         // move the robot
         chassis.tank(leftY, rightY);
 
-        if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
+        if (controller1.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
             claw.toggle();
+        }
+
+        // cascade lift control(hold L1 to go up hold L2 to go down)
+        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+            lift.move(127);
+        } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+            lift.move(-127);
+        } else {
+            lift.brake();
         }
 
         // delay to save resources
