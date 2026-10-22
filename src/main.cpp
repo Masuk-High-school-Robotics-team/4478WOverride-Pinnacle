@@ -2,6 +2,7 @@
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "autons.hpp"
 #include "menu.hpp"
+#include "pros/misc.h"
 
 using namespace pros;
 
@@ -18,6 +19,7 @@ MotorGroup right_mg({2, -4, 8}, MotorGearset::blue);
 // right motor group
 MotorGroup left_mg({-12, 13, -15}, MotorGearset::blue);
 
+pros::adi::Pneumatics claw('A', false); //initally closed
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
@@ -170,6 +172,10 @@ void opcontrol() {
 
         // move the robot
         chassis.tank(leftY, rightY);
+
+        if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
+            claw.toggle();
+        }
 
         // delay to save resources
         delay(25);
