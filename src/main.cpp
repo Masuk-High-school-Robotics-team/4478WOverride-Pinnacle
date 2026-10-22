@@ -22,7 +22,7 @@ MotorGroup left_mg({-12, 13, -15}, MotorGearset::blue);
 pros::adi::Pneumatics claw('A', false); //initally closed
 
 // cascade lift motors
-MotorGroup lift({5, -6}, MotorGearset::green);
+MotorGroup lift({6, -17}, MotorGearset::green);
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
