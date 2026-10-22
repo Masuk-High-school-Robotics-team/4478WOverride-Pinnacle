@@ -19,7 +19,7 @@ MotorGroup right_mg({2, -4, 8}, MotorGearset::blue);
 // right motor group
 MotorGroup left_mg({-12, 13, -15}, MotorGearset::blue);
 
-pros::adi::Pneumatics claw('A', false); //initally closed
+pros::adi::Pneumatics claw('C', false); //initally closed
 
 // cascade lift motors
 MotorGroup lift({6, -17}, MotorGearset::green);
@@ -176,7 +176,7 @@ void opcontrol() {
         // move the robot
         chassis.tank(leftY, rightY);
 
-        if (controller1.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
+        if (controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
             claw.toggle();
         }
 
