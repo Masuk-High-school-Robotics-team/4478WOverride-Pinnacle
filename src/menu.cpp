@@ -4,13 +4,13 @@
 #include <string>
 #include <vector>
 
-// Define expected robot hardware ports and their custom names
+// define expected ports
 struct ExpectedDevice {
     int port;
     std::string name;
 };
 
-// Customize this list with your actual motor/sensor port assignments later!
+//change here
 static std::vector<ExpectedDevice> expected_hardware = {
     {1, "Left Drive 1"},
     {2, "Left Drive 2"},
@@ -28,7 +28,7 @@ lv_obj_t* slot_screen = nullptr;
 lv_obj_t* standby_screen = nullptr;
 lv_obj_t* debug_screen = nullptr;
 
-//ui
+// ui
 static lv_obj_t* slot_btns[4];
 static lv_obj_t* slot_labels[4];
 static lv_obj_t* slot_title_label = nullptr;
@@ -37,14 +37,13 @@ static lv_obj_t* battery_label = nullptr;
 static lv_obj_t* armed_routine_label = nullptr;
 static lv_obj_t* warning_drawer_label = nullptr;
 
-//event callbacks
-
-//debug button, nothing yet will add later
+// event callbacks
+// debug button, nothing yet will add later
 static void debug_btn_event_cb(lv_event_t* e) {
     open_debug_screen();
 }
 
-//main to tpe
+// main to tpe
 static void vex_override_btn_event_cb(lv_event_t* e) {
     current_mode = VEX_OVERRIDE;
     open_type_screen();
@@ -55,7 +54,7 @@ static void recf_btn_event_cb(lv_event_t* e) {
     open_type_screen();
 }
 
-//type to slot
+// type to slot
 static void match_btn_event_cb(lv_event_t* e) {
     current_type = MATCH;
     open_slot_screen();
@@ -66,51 +65,52 @@ static void skills_btn_event_cb(lv_event_t* e) {
     open_slot_screen();
 }
 
-//back buttons
+// back buttons
 static void back_to_main_cb(lv_event_t* e) {
-    lv_screen_load(main_screen);
+    if (main_screen != nullptr) {
+        lv_screen_load(main_screen);
+    }
 }
 
 static void back_to_type_cb(lv_event_t* e) {
-    lv_screen_load(type_screen);
+    open_type_screen();
 }
 
-//slot selection
+// slot selection
 static void slot_btn_event_cb(lv_event_t* e) {
     uintptr_t slot_idx = (uintptr_t)lv_event_get_user_data(e);
     current_slot = static_cast<int>(slot_idx);
-
-    //standby
+    
+    // standby
     open_standby_screen();
 }
 
-//screen creation functions
-
+// screen creation functions
 void open_type_screen() {
     if (type_screen == nullptr) {
         type_screen = lv_obj_create(NULL);
 
-        //header label
+        // header label
         lv_obj_t* title = lv_label_create(type_screen);
         lv_label_set_text(title, "Select Match Type");
         lv_obj_align(title, LV_ALIGN_TOP_LEFT, 15, 12);
 
-        //back button
+        // back button
         lv_obj_t* back_btn = lv_button_create(type_screen);
         lv_obj_set_size(back_btn, 90, 36);
         lv_obj_align(back_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
         lv_obj_add_event_cb(back_btn, back_to_main_cb, LV_EVENT_CLICKED, NULL);
-        
+
         lv_obj_t* back_lbl = lv_label_create(back_btn);
         lv_label_set_text(back_lbl, "< Back");
         lv_obj_center(back_lbl);
 
-        //separator line
+        // separator line
         lv_obj_t* line = lv_obj_create(type_screen);
         lv_obj_set_size(line, 480, 2);
         lv_obj_set_pos(line, 0, 42);
 
-        //match button
+        // match button
         lv_obj_t* match_btn = lv_button_create(type_screen);
         lv_obj_set_size(match_btn, 210, 160);
         lv_obj_align(match_btn, LV_ALIGN_LEFT_MID, 15, 20);
@@ -120,7 +120,7 @@ void open_type_screen() {
         lv_label_set_text(match_lbl, "MATCH AUTON");
         lv_obj_center(match_lbl);
 
-        //skills button
+        // skills button
         lv_obj_t* skills_btn = lv_button_create(type_screen);
         lv_obj_set_size(skills_btn, 210, 160);
         lv_obj_align(skills_btn, LV_ALIGN_RIGHT_MID, -15, 20);
@@ -134,18 +134,17 @@ void open_type_screen() {
     lv_screen_load(type_screen);
 }
 
-//standby screen
-
+// standby screen
 void open_standby_screen() {
     if (standby_screen == nullptr) {
         standby_screen = lv_obj_create(NULL);
 
-        //header
+        // header
         lv_obj_t* title = lv_label_create(standby_screen);
         lv_label_set_text(title, "AUTON ARMED & READY");
         lv_obj_align(title, LV_ALIGN_TOP_LEFT, 15, 12);
 
-        //change auton
+        // change auton
         lv_obj_t* reselect_btn = lv_button_create(standby_screen);
         lv_obj_set_size(reselect_btn, 85, 36);
         lv_obj_align(reselect_btn, LV_ALIGN_TOP_RIGHT, -110, 5);
@@ -155,7 +154,7 @@ void open_standby_screen() {
         lv_label_set_text(reselect_lbl, "< Change");
         lv_obj_center(reselect_lbl);
 
-        //debug shortcut
+        // debug shortcut
         lv_obj_t* debug_btn = lv_button_create(standby_screen);
         lv_obj_set_size(debug_btn, 90, 36);
         lv_obj_align(debug_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
@@ -165,12 +164,12 @@ void open_standby_screen() {
         lv_label_set_text(debug_lbl, "DEBUG");
         lv_obj_center(debug_lbl);
 
-        //line
+        // line
         lv_obj_t* line = lv_obj_create(standby_screen);
         lv_obj_set_size(line, 480, 2);
         lv_obj_set_pos(line, 0, 42);
 
-        //
+        // armed card container
         lv_obj_t* armed_card = lv_obj_create(standby_screen);
         lv_obj_set_size(armed_card, 450, 75);
         lv_obj_align(armed_card, LV_ALIGN_TOP_MID, 0, 50);
@@ -178,7 +177,7 @@ void open_standby_screen() {
         armed_routine_label = lv_label_create(armed_card);
         lv_obj_center(armed_routine_label);
 
-        //warning
+        // warning
         lv_obj_t* warning_box = lv_obj_create(standby_screen);
         lv_obj_set_size(warning_box, 450, 85);
         lv_obj_align(warning_box, LV_ALIGN_BOTTOM_MID, 0, -10);
@@ -187,18 +186,17 @@ void open_standby_screen() {
         lv_obj_align(warning_drawer_label, LV_ALIGN_TOP_LEFT, 5, 5);
     }
 
-    //update armed label
+    // update armed label
     autonSlot selected = autons[current_mode][current_type][current_slot];
     std::string mode_str = (current_mode == VEX_OVERRIDE) ? "VEX" : "RECF";
     std::string type_str = (current_type == MATCH) ? "Match" : "Skills";
     std::string armed_text = "ARMED [" + mode_str + " " + type_str + " S" + std::to_string(current_slot + 1) + "]:\n" + selected.name;
     lv_label_set_text(armed_routine_label, armed_text.c_str());
-
-    // ppdate status summary
+    // update status summary
     int bat_pct = static_cast<int>(pros::battery::get_capacity());
     std::string status_txt = "Battery: " + std::to_string(bat_pct) + "%\n";
-    
-    //check if any expected device is missing
+
+    // check if any expected device is missing
     int missing_count = 0;
     for (const auto& dev : expected_hardware) {
         if (pros::c::get_plugged_type(dev.port) == pros::c::E_DEVICE_NONE) {
@@ -216,23 +214,22 @@ void open_standby_screen() {
     lv_screen_load(standby_screen);
 }
 
-//debug screen
-
+// debug screen
 void open_debug_screen() {
     if (debug_screen == nullptr) {
         debug_screen = lv_obj_create(NULL);
 
-        //header label
+        // header label
         lv_obj_t* title = lv_label_create(debug_screen);
         lv_label_set_text(title, "SYSTEM DIAGNOSTICS");
         lv_obj_align(title, LV_ALIGN_TOP_LEFT, 15, 12);
 
-        //battery telemntery
+        // battery telemntery
         battery_label = lv_label_create(debug_screen);
         lv_label_set_text(battery_label, "Bat: ---%");
         lv_obj_align(battery_label, LV_ALIGN_TOP_RIGHT, -110, 12);
 
-        //back button
+        // back button
         lv_obj_t* back_btn = lv_button_create(debug_screen);
         lv_obj_set_size(back_btn, 90, 36);
         lv_obj_align(back_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
@@ -242,22 +239,22 @@ void open_debug_screen() {
         lv_label_set_text(back_lbl, "< Back");
         lv_obj_center(back_lbl);
 
-        //divider line
+        // divider line
         lv_obj_t* line = lv_obj_create(debug_screen);
         lv_obj_set_size(line, 480, 2);
         lv_obj_set_pos(line, 0, 42);
 
-        //scollable container
+        // scollable container
         list_container = lv_obj_create(debug_screen);
         lv_obj_set_size(list_container, 450, 180);
         lv_obj_align(list_container, LV_ALIGN_BOTTOM_MID, 0, -5);
 
-        //enable scrolling and auto scrollbar
+        // enable scrolling and auto scrollbar
         lv_obj_set_scroll_dir(list_container, LV_DIR_VER);
-        lv_obj_set_scrollbar_mode(list_container, LV_SCROLLBAR_MODE_AUTO);
+        lv_obj_set_scrollbar_mode(list_container, LV_SCROLLBAR_MODE_ON);
     }
 
-    //populatr rows
+    // populatr rows
     update_debug_hardware();
     lv_screen_load(debug_screen);
 }
@@ -265,14 +262,14 @@ void open_debug_screen() {
 void update_debug_hardware() {
     if (debug_screen == nullptr || list_container == nullptr) return;
 
-    //update battery percentage
+    // update battery percentage
     int bat_pct = static_cast<int>(pros::battery::get_capacity());
     std::string bat_str = "Bat: " + std::to_string(bat_pct) + "%";
     if (battery_label != nullptr) {
         lv_label_set_text(battery_label, bat_str.c_str());
     }
 
-    //clear old list items
+    // clear old list items
     lv_obj_clean(list_container);
 
     int y_pos = 5;
@@ -281,7 +278,7 @@ void update_debug_hardware() {
     for (int port = 1; port <= 21; port++) {
         pros::c::v5_device_e_t type = pros::c::get_plugged_type(port);
 
-        //check if this port is expected and get its name
+        // check if this port is expected and get its name
         std::string expected_name = "";
         for (const auto& dev : expected_hardware) {
             if (dev.port == port) {
@@ -290,18 +287,18 @@ void update_debug_hardware() {
             }
         }
 
-        //filter logic: if the port is not expected and has no device, skip it
+        // filter logic: if the port is not expected and has no device, skip it
         if (type == pros::c::E_DEVICE_NONE && expected_name.empty()) {
-            continue; 
+            continue;
         }
 
-        //display the port and its status
+        // display the port and its status
         lv_obj_t* row_label = lv_label_create(list_container);
         lv_obj_set_pos(row_label, 10, y_pos);
 
-        std::string text = "Port " + std::to_string(port) + " ";
+        std::string text = "Port " + std::to_string(port);
         if (!expected_name.empty()) {
-            text += "(" + expected_name + "): ";
+            text += " (" + expected_name + "): ";
         } else {
             text += ": ";
         }
@@ -323,7 +320,7 @@ void update_debug_hardware() {
         }
 
         lv_label_set_text(row_label, text.c_str());
-        y_pos += 28; //vertical spacing
+        y_pos += 28; // vertical spacing
     }
 }
 
@@ -331,16 +328,16 @@ void open_slot_screen() {
     if (slot_screen == nullptr) {
         slot_screen = lv_obj_create(NULL);
 
-        //title header
+        // title header
         slot_title_label = lv_label_create(slot_screen);
         lv_obj_align(slot_title_label, LV_ALIGN_TOP_LEFT, 15, 12);
 
-        //back button
+        // back button
         lv_obj_t* back_btn = lv_button_create(slot_screen);
         lv_obj_set_size(back_btn, 90, 36);
         lv_obj_align(back_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
         lv_obj_add_event_cb(back_btn, back_to_type_cb, LV_EVENT_CLICKED, NULL);
-        
+
         lv_obj_t* back_lbl = lv_label_create(back_btn);
         lv_label_set_text(back_lbl, "< Back");
         lv_obj_center(back_lbl);
@@ -350,7 +347,7 @@ void open_slot_screen() {
         lv_obj_set_size(line, 480, 2);
         lv_obj_set_pos(line, 0, 42);
 
-        //2x2 slot
+        // 2x2 slot
         int btn_w = 210;
         int btn_h = 75;
         int x_off[4] = {15, 255, 15, 255};
@@ -367,15 +364,13 @@ void open_slot_screen() {
         }
     }
 
-    
-
-    //refresh 
+    // refresh
     std::string mode_str = (current_mode == VEX_OVERRIDE) ? "VEX" : "RECF";
     std::string type_str = (current_type == MATCH) ? "MATCH" : "SKILLS";
     std::string title_text = mode_str + " - " + type_str + " - Select Slot";
     lv_label_set_text(slot_title_label, title_text.c_str());
 
-    //names
+    // names
     for (int i = 0; i < 4; i++) {
         autonSlot slot = autons[current_mode][current_type][i];
 
@@ -397,19 +392,19 @@ void init_brain_menu() {
     main_screen = lv_obj_create(NULL);
     lv_screen_load(main_screen);
 
-    //team label
+    // team label
     lv_obj_t* team_label = lv_label_create(main_screen);
     lv_label_set_text(team_label, "4478W");
     lv_obj_align(team_label, LV_ALIGN_TOP_LEFT, 15, 12);
 
-    //status
+    // status
     lv_obj_t* status_badge = lv_label_create(main_screen);
     lv_label_set_text(status_badge, "[ ALL SYS OK ]");
     lv_obj_align(status_badge, LV_ALIGN_TOP_MID, 0, 12);
 
-    //debug button
+    // debug button
     lv_obj_t* debug_btn = lv_button_create(main_screen);
-    lv_obj_set_size(debug_btn, 90, 32);
+    lv_obj_set_size(debug_btn, 90, 36);
     lv_obj_align(debug_btn, LV_ALIGN_TOP_RIGHT, -10, 5);
     lv_obj_add_event_cb(debug_btn, debug_btn_event_cb, LV_EVENT_CLICKED, NULL);
 
@@ -417,17 +412,13 @@ void init_brain_menu() {
     lv_label_set_text(debug_label, "DEBUG");
     lv_obj_center(debug_label);
 
-    //header separator line
-    //static lv_point_line_t line_points[] = { {0, 42}, {480, 42} };
+    // header separator line
     lv_obj_t* line = lv_obj_create(main_screen);
     lv_obj_set_size(line, 480, 2);
     lv_obj_set_pos(line, 0, 42);
 
-
     // main mode selection buttons
-
-
-    //vex override button
+    // vex override button
     lv_obj_t* vex_btn = lv_button_create(main_screen);
     lv_obj_set_size(vex_btn, 210, 160);
     lv_obj_align(vex_btn, LV_ALIGN_LEFT_MID, 15, 20);
@@ -437,7 +428,7 @@ void init_brain_menu() {
     lv_label_set_text(vex_label, "VEX OVERRIDE");
     lv_obj_center(vex_label);
 
-    //RECF pinnacle button
+    // RECF pinnacle button
     lv_obj_t* recf_btn = lv_button_create(main_screen);
     lv_obj_set_size(recf_btn, 210, 160);
     lv_obj_align(recf_btn, LV_ALIGN_RIGHT_MID, -15, 20);
@@ -447,4 +438,3 @@ void init_brain_menu() {
     lv_label_set_text(recf_label, "RECF PINNACLE");
     lv_obj_center(recf_label);
 }
-
