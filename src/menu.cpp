@@ -36,6 +36,7 @@ static lv_obj_t* list_container = nullptr;
 static lv_obj_t* battery_label = nullptr;
 static lv_obj_t* armed_routine_label = nullptr;
 static lv_obj_t* warning_drawer_label = nullptr;
+static lv_obj_t* debug_row_labels[21] = {nullptr};
 
 // event callbacks
 // debug button, nothing yet will add later
@@ -252,6 +253,13 @@ void open_debug_screen() {
         // enable scrolling and auto scrollbar
         lv_obj_set_scroll_dir(list_container, LV_DIR_VER);
         lv_obj_set_scrollbar_mode(list_container, LV_SCROLLBAR_MODE_ON);
+
+        // Create 21 row label objects ONCE so touch events don't get interrupted
+        for (int i = 0; i < 21; i++) {
+            debug_row_labels[i] = lv_label_create(list_container);
+            // Ignore touch clicks on the text labels so touch drags pass directly to list_container
+            lv_obj_remove_flag(debug_row_labels[i], LV_OBJ_FLAG_CLICKABLE);
+        }
     }
 
     // populatr rows
@@ -268,9 +276,6 @@ void update_debug_hardware() {
     if (battery_label != nullptr) {
         lv_label_set_text(battery_label, bat_str.c_str());
     }
-
-    // clear old list items
-    lv_obj_clean(list_container);
 
     int y_pos = 5;
 
@@ -289,12 +294,14 @@ void update_debug_hardware() {
 
         // filter logic: if the port is not expected and has no device, skip it
         if (type == pros::c::E_DEVICE_NONE && expected_name.empty()) {
+            // Hide row if not assigned or connected
+            lv_obj_add_flag(debug_row_labels[port - 1], LV_OBJ_FLAG_HIDDEN);
             continue;
         }
 
-        // display the port and its status
-        lv_obj_t* row_label = lv_label_create(list_container);
-        lv_obj_set_pos(row_label, 10, y_pos);
+        // Unhide and position row
+        lv_obj_remove_flag(debug_row_labels[port - 1], LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_pos(debug_row_labels[port - 1], 10, y_pos);
 
         std::string text = "Port " + std::to_string(port);
         if (!expected_name.empty()) {
@@ -319,7 +326,7 @@ void update_debug_hardware() {
             text += "CONNECTED DEVICE";
         }
 
-        lv_label_set_text(row_label, text.c_str());
+        lv_label_set_text(debug_row_labels[port - 1], text.c_str());
         y_pos += 28; // vertical spacing
     }
 }
