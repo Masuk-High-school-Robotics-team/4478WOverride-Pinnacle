@@ -10,8 +10,13 @@ extern lv_obj_t* main_screen;
 extern lv_obj_t* type_screen;
 extern lv_obj_t* slot_screen;
 extern lv_obj_t* standby_screen;
+extern lv_obj_t* debug_screen;
 
 // function of screens
 void open_type_screen();
 void open_slot_screen();
 void open_standby_screen();
+void open_debug_screen();
+
+// live telmetry
+void update_debug_hardware();
