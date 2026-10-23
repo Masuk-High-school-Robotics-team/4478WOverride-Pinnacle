@@ -12,13 +12,15 @@ struct ExpectedDevice {
 
 //change here
 static std::vector<ExpectedDevice> expected_hardware = {
-    {1, "Left Drive 1"},
-    {2, "Left Drive 2"},
-    {3, "Left Drive 3"},
-    {4, "Right Drive 1"},
-    {5, "Right Drive 2"},
-    {6, "Right Drive 3"},
-    {10, "Inertial Sensor"}
+    {12, "Left Drive 1"},
+    {13, "Left Drive 2"},
+    {15, "Left Drive 3"},
+    {2, "Right Drive 1"},
+    {4, "Right Drive 2"},
+    {8, "Right Drive 3"},
+    {6, "Cascade Motor 1"},
+    {17, "Cascade Motor 2"},
+    //{10, "Inertial Sensor"}
 };
 
 // UI Element Handles
@@ -395,6 +397,17 @@ void open_slot_screen() {
     lv_screen_load(slot_screen);
 }
 
+
+//background task to update battery and hardware status on debug screen
+void start_telemetry_task() {
+    pros::Task telemetry_task([] {
+        while (true) {
+            update_debug_hardware();
+            pros::delay(500); //prevents the resoruce waste thign
+        }
+    });
+}
+
 void init_brain_menu() {
     main_screen = lv_obj_create(NULL);
     lv_screen_load(main_screen);
@@ -444,4 +457,9 @@ void init_brain_menu() {
     lv_obj_t* recf_label = lv_label_create(recf_btn);
     lv_label_set_text(recf_label, "RECF PINNACLE");
     lv_obj_center(recf_label);
+
+    //background task
+    start_telemetry_task();
 }
+
+
