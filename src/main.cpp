@@ -189,6 +189,7 @@ void opcontrol() {
         } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             lift.move(-127);
         } else {
+            lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
             lift.brake();
         }
 
