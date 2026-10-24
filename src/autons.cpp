@@ -88,6 +88,9 @@ void recf_skills_slot1() {
     
     pros::lcd::set_text(1, "Running: RECF Skills Slot 1"); 
 
+    driveForward(100, 100);
+    clawOpen();
+
 }
 
 void recf_skills_slot2() {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "main.h"
+#include "autonfunctions.hpp"
 #include <functional>
 #include <string>
 
@@ -58,4 +59,6 @@ void recf_match_slot4();
 void recf_skills_slot1();
 void recf_skills_slot2();
 void recf_skills_slot3();
+void recf_skills_slot4();
+
 void recf_skills_slot4();
