@@ -147,7 +147,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	run_selected_auton();
+	//run_selected_auton();
+    recf_skills_slot1();
 }
 
 /**

@@ -21,17 +21,17 @@ static void waitLiftMotors() {
 
 //need to add PID
 
-void driveForward(double degrees, int velocity) {
+void driveBackward(double degrees, int velocity) {
     left_mg.move_relative(std::abs(degrees), std::abs(velocity));
     right_mg.move_relative(std::abs(degrees), std::abs(velocity));
     waitDriveMotors();
 }
 
 
-void driveBackward(double degrees, int velocity) {
+void driveForward(double degrees, int velocity) {
     left_mg.move_relative(-std::abs(degrees), std::abs(velocity));
     right_mg.move_relative(-std::abs(degrees), std::abs(velocity));
-    waitDriveMotors();
+    //waitDriveMotors();
 }
 
 
@@ -75,11 +75,12 @@ void driveStop() {
 
 
 void clawOpen() {
-    claw.set_value(true);
+    //claw.set_value(false);
+    claw.extend();
 }
 
 void clawClose() {
-    claw.set_value(false);
+    claw.set_value(true);
 }
 
 void clawToggle() {
