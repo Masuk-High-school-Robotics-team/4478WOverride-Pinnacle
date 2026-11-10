@@ -1,6 +1,8 @@
 #include "autons.hpp"
 
 
+
+
 //initizale default
 mode current_mode = VEX_OVERRIDE;
 type current_type = MATCH;
@@ -92,6 +94,9 @@ void recf_skills_slot1() {
     pros::delay(2000);
     clawOpen();
     driveBackward(5, 100);
+    
+
+    
 
 }
 
