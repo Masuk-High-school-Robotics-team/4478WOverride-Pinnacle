@@ -6,6 +6,7 @@
 #include "menu.hpp"
 #include "pros/misc.h"
 #include "devices.hpp"
+#include "pros/motors.h"
 
 using namespace pros;
 
@@ -99,7 +100,7 @@ void opcontrol() {
         // move the robot
         chassis.tank(leftY, rightY);
 
-        if (controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) {
+        if (controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
             claw.toggle();
         }
 
@@ -109,10 +110,18 @@ void opcontrol() {
         } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             lift.move(-127);
         } else {
-            lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+            lift.set_brake_mode(E_MOTOR_BRAKE_HOLD);
             lift.brake();
         }
 
+        //toggle
+        if (controller1.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+            toggle.move(127);
+        }
+        else{
+            toggle.set_brake_mode(E_MOTOR_BRAKE_COAST);
+            toggle.brake();
+        }
         // delay to save resources
         delay(25);
 	}

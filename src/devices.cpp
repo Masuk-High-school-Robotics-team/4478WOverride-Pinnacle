@@ -1,7 +1,9 @@
 #include "main.h" // IWYU pragma: keep
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "lemlib/chassis/trackingWheel.hpp"
+#include "pros/abstract_motor.hpp"
 #include "pros/misc.h"
+#include "pros/motor_group.hpp"
 
 using namespace pros;
 
@@ -15,6 +17,9 @@ pros::adi::Pneumatics claw('C', false); //initally closed
 
 // cascade lift motors
 MotorGroup lift({6, -17}, MotorGearset::green);
+
+// toggle motors
+MotorGroup toggle({3, -5});
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
