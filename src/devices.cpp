@@ -19,7 +19,7 @@ pros::adi::Pneumatics claw('C', false); //initally closed
 MotorGroup lift({6, -17}, MotorGearset::green);
 
 // toggle motors
-MotorGroup toggle({3, -5});
+MotorGroup toggle({7, -5});
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
