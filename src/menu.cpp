@@ -20,7 +20,9 @@ static std::vector<ExpectedDevice> expected_hardware = {
     {8, "Right Drive 3"},
     {6, "Cascade Motor 1"},
     {17, "Cascade Motor 2"},
-    //{10, "Inertial Sensor"}
+    {7, "Toggle Motor 1"},
+    {5, "Toggle Motor 2"},
+    {16, "Inertial Sensor"}
 };
 
 // UI Element Handles
