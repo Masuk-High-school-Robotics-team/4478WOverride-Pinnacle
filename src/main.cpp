@@ -88,7 +88,7 @@ void autonomous() {
  
 void opcontrol() {
 
-    lift.set_zero_position(0);
+    lift.tare_position(); //sets current lift motors position to zero
 	
 
 	while (true) {
