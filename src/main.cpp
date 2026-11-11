@@ -116,7 +116,7 @@ void opcontrol() {
 
         //toggle
         if (controller1.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-            toggle.move(127);
+            toggle.move(25);
         }
         else{
             toggle.set_brake_mode(E_MOTOR_BRAKE_COAST);
