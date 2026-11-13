@@ -88,7 +88,7 @@ void autonomous() {
  
 void opcontrol() {
 
-    lift.tare_position(); //sets current lift motors position to zero
+    lift.set_zero_position(0); //sets current lift motors position to zero
 	
 
 	while (true) {
@@ -105,6 +105,8 @@ void opcontrol() {
         }
 
         // cascade lift control(hold L1 to go up hold L2 to go down)
+
+        
         if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1) && lift.get_position() < 0) {
             lift.move(127);
         } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
