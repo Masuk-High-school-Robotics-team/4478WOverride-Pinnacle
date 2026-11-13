@@ -26,6 +26,7 @@ void initialize() {
 	//lcd::initialize(); // initialize brain screen
     init_brain_menu();
     chassis.calibrate(); // calibrate sensors
+    lift.tare_position_all(); //sets lift motors position to 0
     // print position to brain screen
 }
 
@@ -87,9 +88,6 @@ void autonomous() {
 
  
 void opcontrol() {
-
-    lift.set_zero_position(0); //sets current lift motors position to zero
-	
 
 	while (true) {
 
