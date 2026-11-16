@@ -105,7 +105,7 @@ void opcontrol() {
         // cascade lift control(hold L1 to go up hold L2 to go down)
 
         
-        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1) && lift.get_position() < 0) {
+        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1)) {
             lift.move(127);
         } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             lift.move(-127);
