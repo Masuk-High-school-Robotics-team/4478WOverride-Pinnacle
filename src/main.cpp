@@ -26,6 +26,7 @@ void initialize() {
 	//lcd::initialize(); // initialize brain screen
     init_brain_menu();
     chassis.calibrate(); // calibrate sensors
+    lift.tare_position_all(); //sets lift motors position to 0
     // print position to brain screen
 }
 
@@ -88,9 +89,6 @@ void autonomous() {
  
 void opcontrol() {
 
-    lift.set_zero_position(0); //sets current lift motors position to zero
-	
-
 	while (true) {
 
 		// get left y and right y positions
@@ -107,7 +105,7 @@ void opcontrol() {
         // cascade lift control(hold L1 to go up hold L2 to go down)
 
         
-        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1) && lift.get_position() < 0) {
+        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1)) {
             lift.move(127);
         } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             lift.move(-127);
