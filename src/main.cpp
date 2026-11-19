@@ -23,8 +23,8 @@ using namespace pros;
 
 
 void initialize() {
-	//lcd::initialize(); // initialize brain screen
-    init_brain_menu();
+	lcd::initialize(); // initialize brain screen
+    //init_brain_menu();
     chassis.calibrate(); // calibrate sensors
     lift.tare_position_all(); //sets lift motors position to 0
     // print position to brain screen
@@ -61,13 +61,15 @@ void competition_initialize() {}
  */
 void autonomous() {
 	//run_selected_auton();
-    //recf_skills_slot1();
+    //recf_match_slot1();
 
-    //this is for pid tuning
+    
     // set position to x:0, y:0, heading:0
     chassis.setPose(0, 0, 0);
     // turn to face heading 90 with a very long timeout
     chassis.turnToHeading(90, 100000);
+    
+
 }
 
 /**
@@ -96,7 +98,7 @@ void opcontrol() {
         int rightY = controller1.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
 
         // move the robot
-        chassis.tank(leftY, rightY);
+        chassis.tank(-leftY, -rightY);
 
         if (controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
             claw.toggle();

@@ -9,9 +9,9 @@ using namespace pros;
 
 Controller controller1(E_CONTROLLER_MASTER);
  // left motor group
-MotorGroup right_mg({2, -4, 8}, MotorGearset::blue);
+MotorGroup right_mg({-2, 4, -8}, MotorGearset::blue);
 // right motor group
-MotorGroup left_mg({-12, 13, -15}, MotorGearset::blue);
+MotorGroup left_mg({12, -13, 15}, MotorGearset::blue);
 
 pros::adi::Pneumatics claw('C', false); //initally closed
 
@@ -62,13 +62,13 @@ lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel 1, set to null
 // angular PID controller
 lemlib::ControllerSettings angular_controller(1.8, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              7.2, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in degrees
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in degrees
-                                              500, // large error range timeout, in milliseconds
-                                              30 // maximum acceleration (slew)
+                                              7.8, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in degrees
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in degrees
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
 );
 
 lemlib::ControllerSettings lateral_controller(5.871, // proportional gain (kP)
