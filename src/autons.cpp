@@ -1,6 +1,4 @@
 #include "autons.hpp"
-#include "autonfunctions.hpp"
-#include "devices.hpp"
 
 
 
@@ -63,17 +61,8 @@ void vex_skills_slot4() {
 
 //RECF pinnacle match
 void recf_match_slot1() { 
-    //main
     
     pros::lcd::set_text(1, "Running: RECF Match Slot 1"); 
-
-    //chassis.setPose(58, 61, 180);
-
-    //chassis.moveToPoint(58, 48, 1000);
-    driveInches(3, 65);
-    turn(90, 70);
-
-    
 
 }
 
@@ -81,46 +70,11 @@ void recf_match_slot2() {
     
     pros::lcd::set_text(1, "Running: RECF Match Slot 2"); 
 
-    chassis.setPose(58, 61, 180);
-
-    while (true) {
-        lemlib::Pose pose = chassis.getPose();
-
-        pros::lcd::print(0, "X: %.2f", pose.x);
-        pros::lcd::print(1, "Y: %.2f", pose.y);
-        pros::lcd::print(2, "Theta: %.2f", pose.theta);
-
-        pros::delay(20);
-    }
-
 }
 
 void recf_match_slot3() { 
-
-    while(true) {
     
-        pros::lcd::set_text(1, "Running: RECF Match Slot 3"); 
-
-        auto left = left_mg.get_position_all();
-        auto right = right_mg.get_position_all();
-
-        // Left drivetrain motors
-        pros::lcd::print(0, "L12: %.2f", left[0]);
-        pros::lcd::print(1, "L13: %.2f", left[1]);
-        pros::lcd::print(2, "L15: %.2f", left[2]);
-
-        // Right drivetrain motors
-        pros::lcd::print(3, "R2: %.2f", right[0]);
-        pros::lcd::print(4, "R4: %.2f", right[1]);
-        pros::lcd::print(5, "R8: %.2f", right[2]);
-
-        // Odometry and IMU
-        pros::lcd::print(6, "Theta: %.2f", chassis.getPose().theta);
-        pros::lcd::print(7, "IMU: %.2f", imu.get_heading());
-
-        pros::delay(50);
-
-    }
+    pros::lcd::set_text(1, "Running: RECF Match Slot 3"); 
 
 }
 
@@ -136,6 +90,11 @@ void recf_skills_slot1() {
     
     pros::lcd::set_text(1, "Running: RECF Skills Slot 1"); 
 
+    driveForward(5, 100);
+    pros::delay(2000);
+    clawOpen();
+    driveBackward(5, 100);
+    
 
     
 

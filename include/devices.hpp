@@ -8,5 +8,4 @@ extern pros::Controller controller1;
 extern pros::MotorGroup lift;
 extern pros::adi::Pneumatics claw;
 extern lemlib::Chassis chassis; 
-extern pros::Imu imu;
 extern pros::MotorGroup toggle;

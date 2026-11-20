@@ -21,20 +21,32 @@ static void waitLiftMotors() {
 
 //need to add PID
 
-void drive(double degrees, int velocity) {
+void driveBackward(double degrees, int velocity) {
     left_mg.move_relative(std::abs(degrees), std::abs(velocity));
     right_mg.move_relative(std::abs(degrees), std::abs(velocity));
+    waitDriveMotors();
+}
+
+
+void driveForward(double degrees, int velocity) {
+    left_mg.move_relative(-std::abs(degrees), std::abs(velocity));
+    right_mg.move_relative(-std::abs(degrees), std::abs(velocity));
     //waitDriveMotors();
 }
 
 
-void turn(double degrees, int velocity) {
+void turnLeft(double degrees, int velocity) {
     left_mg.move_relative(-std::abs(degrees), std::abs(velocity));
     right_mg.move_relative(std::abs(degrees), std::abs(velocity));
-    //waitDriveMotors();
+    waitDriveMotors();
 }
 
 
+void turnRight(double degrees, int velocity) {
+    left_mg.move_relative(std::abs(degrees), std::abs(velocity));
+    right_mg.move_relative(-std::abs(degrees), std::abs(velocity));
+    waitDriveMotors();
+}
 
 
 void driveTime(int timeMs, int velocity) {
@@ -98,14 +110,4 @@ void cascadeTime(int timeMs, int velocity) {
 void cascadeStop() {
     lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     lift.brake();
-}
-
-void driveInches(double inches, double percent){
-    double wheelDiameter = 3.25;
-    double circumference = wheelDiameter * M_PI;
-    double gearRatio = 3.0/4.0;
-    double degrees = (inches / circumference) * (360.0 * gearRatio);
-    double rpm = percent * 6;
-
-    drive(degrees, rpm);
 }

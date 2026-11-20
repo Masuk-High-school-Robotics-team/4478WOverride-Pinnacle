@@ -23,10 +23,9 @@ using namespace pros;
 
 
 void initialize() {
-	lcd::initialize(); // initialize brain screen
-    //init_brain_menu();
+	//lcd::initialize(); // initialize brain screen
+    init_brain_menu();
     chassis.calibrate(); // calibrate sensors
-    lift.tare_position_all(); //sets lift motors position to 0
     // print position to brain screen
 }
 
@@ -61,20 +60,16 @@ void competition_initialize() {}
  */
 void autonomous() {
 	//run_selected_auton();
-    recf_match_slot1();
-    
-    /*
+    //recf_skills_slot1();
+
+    //this is for pid tuning
     // set position to x:0, y:0, heading:0
     chassis.setPose(0, 0, 0);
     // turn to face heading 90 with a very long timeout
-    chassis.turnToHeading(90, 100000);
-    */
-    
-    
-
+    chassis.moveToPoint(0, 48, 100000);
 }
 
-/*
+/**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
  * the Field Management System or the VEX Competition Switch in the operator
@@ -93,6 +88,9 @@ void autonomous() {
  
 void opcontrol() {
 
+    lift.tare_position(); //sets current lift motors position to zero
+	
+
 	while (true) {
 
 		// get left y and right y positions
@@ -100,16 +98,14 @@ void opcontrol() {
         int rightY = controller1.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
 
         // move the robot
-        chassis.tank(-leftY, -rightY);
+        chassis.tank(leftY, rightY);
 
         if (controller1.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
             claw.toggle();
         }
 
         // cascade lift control(hold L1 to go up hold L2 to go down)
-
-        
-        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1) && lift.get_position() < 0) {
             lift.move(127);
         } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             lift.move(-127);
@@ -120,7 +116,7 @@ void opcontrol() {
 
         //toggle
         if (controller1.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-            toggle.move(25);
+            toggle.move(127);
         }
         else{
             toggle.set_brake_mode(E_MOTOR_BRAKE_COAST);

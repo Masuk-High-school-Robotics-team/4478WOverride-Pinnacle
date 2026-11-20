@@ -10,11 +10,13 @@ extern pros::adi::Pneumatics claw;
 extern pros::MotorGroup lift;
 
 // Simple Drivetrain Functions (Motor degrees or time)
-void drive(double degrees, int velocity);
-void turn(double degrees, int velocity);
+void driveForward(double degrees, int velocity = 100);
+void driveBackward(double degrees, int velocity = 100);
+void turnLeft(double degrees, int velocity = 100);
+void turnRight(double degrees, int velocity = 100);
 
-void driveTime(int timeMs, int velocity);
-void turnTime(int timeMs, int velocity);
+void driveTime(int timeMs, int velocity = 100);
+void turnTime(int timeMs, int velocity = 100);
 void driveStop();
 
 // Simple Pneumatic Claw Functions
@@ -27,5 +29,3 @@ void cascadeUp(double degrees, int velocity = 100);
 void cascadeDown(double degrees, int velocity = 100);
 void cascadeTime(int timeMs, int velocity = 100);
 void cascadeStop();
-
-void driveInches(double inches, double percent);
