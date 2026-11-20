@@ -1,4 +1,5 @@
 #include "autons.hpp"
+#include "autonfunctions.hpp"
 #include "devices.hpp"
 
 
@@ -66,10 +67,13 @@ void recf_match_slot1() {
     
     pros::lcd::set_text(1, "Running: RECF Match Slot 1"); 
 
-    chassis.setPose(58, 61, 180);
+    //chassis.setPose(58, 61, 180);
 
-    chassis.moveToPoint(58, 48, 4000);
-    chassis.turnToHeading(90, 1500);
+    //chassis.moveToPoint(58, 48, 1000);
+    driveInches(3, 65);
+    turn(90, 70);
+
+    
 
 }
 
@@ -132,11 +136,6 @@ void recf_skills_slot1() {
     
     pros::lcd::set_text(1, "Running: RECF Skills Slot 1"); 
 
-    driveForward(5, 100);
-    pros::delay(2000);
-    clawOpen();
-    driveBackward(5, 100);
-    
 
     
 
