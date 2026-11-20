@@ -19,7 +19,7 @@ pros::adi::Pneumatics claw('C', false); //initally closed
 MotorGroup lift({6, -17}, MotorGearset::green);
 
 // toggle motors
-MotorGroup toggle({7, -5});
+MotorGroup toggle({7, -9});
 
 // drivetrain settings
 lemlib::Drivetrain drivetrain(&left_mg, // left motor group
@@ -60,9 +60,9 @@ lemlib::OdomSensors sensors(nullptr, // vertical tracking wheel 1, set to null
 );
 
 // angular PID controller
-lemlib::ControllerSettings angular_controller(1.8, // proportional gain (kP)
+lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              7.8, // derivative gain (kD)
+                                              20, // derivative gain (kD)
                                               0, // anti windup
                                               0, // small error range, in degrees
                                               0, // small error range timeout, in milliseconds

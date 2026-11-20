@@ -92,27 +92,31 @@ void recf_match_slot2() {
 }
 
 void recf_match_slot3() { 
+
+    while(true) {
     
-    pros::lcd::set_text(1, "Running: RECF Match Slot 3"); 
+        pros::lcd::set_text(1, "Running: RECF Match Slot 3"); 
 
-    auto left = left_mg.get_position_all();
-    auto right = right_mg.get_position_all();
+        auto left = left_mg.get_position_all();
+        auto right = right_mg.get_position_all();
 
-    // Left drivetrain motors
-    pros::lcd::print(0, "L12: %.2f", left[0]);
-    pros::lcd::print(1, "L13: %.2f", left[1]);
-    pros::lcd::print(2, "L15: %.2f", left[2]);
+        // Left drivetrain motors
+        pros::lcd::print(0, "L12: %.2f", left[0]);
+        pros::lcd::print(1, "L13: %.2f", left[1]);
+        pros::lcd::print(2, "L15: %.2f", left[2]);
 
-    // Right drivetrain motors
-    pros::lcd::print(3, "R2: %.2f", right[0]);
-    pros::lcd::print(4, "R4: %.2f", right[1]);
-    pros::lcd::print(5, "R8: %.2f", right[2]);
+        // Right drivetrain motors
+        pros::lcd::print(3, "R2: %.2f", right[0]);
+        pros::lcd::print(4, "R4: %.2f", right[1]);
+        pros::lcd::print(5, "R8: %.2f", right[2]);
 
-    // Odometry and IMU
-    pros::lcd::print(6, "Theta: %.2f", chassis.getPose().theta);
-    pros::lcd::print(7, "IMU: %.2f", imu.get_heading());
+        // Odometry and IMU
+        pros::lcd::print(6, "Theta: %.2f", chassis.getPose().theta);
+        pros::lcd::print(7, "IMU: %.2f", imu.get_heading());
 
-    pros::delay(50);
+        pros::delay(50);
+
+    }
 
 }
 
