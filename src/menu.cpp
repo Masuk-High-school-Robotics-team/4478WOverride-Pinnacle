@@ -1,8 +1,11 @@
 #include "menu.hpp"
 #include "autons.hpp"
+#include "motion/motion.hpp"
+#include "motion/odometry.hpp"
 #include "liblvgl/lvgl.h"
 #include <string>
 #include <vector>
+#include <cstdio>
 
 // define expected ports
 struct ExpectedDevice {
@@ -21,7 +24,7 @@ static std::vector<ExpectedDevice> expected_hardware = {
     {6, "Cascade Motor 1"},
     {17, "Cascade Motor 2"},
     {7, "Toggle Motor 1"},
-    {5, "Toggle Motor 2"},
+    {9, "Toggle Motor 2"},
     {16, "Inertial Sensor"}
 };
 
@@ -41,6 +44,8 @@ static lv_obj_t* battery_label = nullptr;
 static lv_obj_t* armed_routine_label = nullptr;
 static lv_obj_t* warning_drawer_label = nullptr;
 static lv_obj_t* debug_row_labels[21] = {nullptr};
+static lv_obj_t* motion_status_label = nullptr;
+static lv_obj_t* status_badge = nullptr;
 
 // event callbacks
 // debug button, nothing yet will add later
@@ -188,6 +193,7 @@ void open_standby_screen() {
         lv_obj_align(warning_box, LV_ALIGN_BOTTOM_MID, 0, -10);
 
         warning_drawer_label = lv_label_create(warning_box);
+        lv_obj_set_width(warning_drawer_label, 420);
         lv_obj_align(warning_drawer_label, LV_ALIGN_TOP_LEFT, 5, 5);
     }
 
@@ -258,6 +264,9 @@ void open_debug_screen() {
         lv_obj_set_scroll_dir(list_container, LV_DIR_VER);
         lv_obj_set_scrollbar_mode(list_container, LV_SCROLLBAR_MODE_ON);
 
+        motion_status_label = lv_label_create(list_container);
+        lv_obj_set_width(motion_status_label, 410);
+
         // Create 21 row label objects ONCE so touch events don't get interrupted
         for (int i = 0; i < 21; i++) {
             debug_row_labels[i] = lv_label_create(list_container);
@@ -272,6 +281,15 @@ void open_debug_screen() {
 }
 
 void update_debug_hardware() {
+    // Called from the LVGL timer, so UI updates share its event-loop context.
+    if (status_badge != nullptr) lv_label_set_text(status_badge, motion::status());
+    if (warning_drawer_label != nullptr) {
+        int missing = 0;
+        for (const auto& dev : expected_hardware)
+            if (pros::c::get_plugged_type(dev.port) == pros::c::E_DEVICE_NONE) ++missing;
+        lv_label_set_text_fmt(warning_drawer_label, "Battery: %d%% | Missing: %d\nMotion: %s",
+            static_cast<int>(pros::battery::get_capacity()), missing, motion::status());
+    }
     if (debug_screen == nullptr || list_container == nullptr) return;
 
     // update battery percentage
@@ -281,7 +299,16 @@ void update_debug_hardware() {
         lv_label_set_text(battery_label, bat_str.c_str());
     }
 
-    int y_pos = 5;
+    const auto sample = motion::odometry::sample();
+    const auto pose = sample.pose;
+    lv_obj_set_pos(motion_status_label, 10, 5);
+    // Format floats with libc: the bundled LVGL defaults to LV_USE_FLOAT=0.
+    char motionText[220];
+    std::snprintf(motionText, sizeof(motionText),
+        "Motion: %s\nX: %.2f  Y: %.2f  Heading: %.2f\nDrive inches L: %.2f  R: %.2f",
+        motion::status(), pose.x, pose.y, pose.theta, sample.leftDistance, sample.rightDistance);
+    lv_label_set_text(motion_status_label, motionText);
+    int y_pos = 85;
 
     // 3. Scan all 21 ports
     for (int port = 1; port <= 21; port++) {
@@ -402,12 +429,8 @@ void open_slot_screen() {
 
 //background task to update battery and hardware status on debug screen
 void start_telemetry_task() {
-    pros::Task telemetry_task([] {
-        while (true) {
-            update_debug_hardware();
-            pros::delay(500); //prevents the resoruce waste thign
-        }
-    });
+    // LVGL timers avoid writing widgets from an unrelated PROS task.
+    lv_timer_create([](lv_timer_t*) { update_debug_hardware(); }, 500, nullptr);
 }
 
 void init_brain_menu() {
@@ -420,7 +443,9 @@ void init_brain_menu() {
     lv_obj_align(team_label, LV_ALIGN_TOP_LEFT, 15, 12);
 
     // status
-    lv_obj_t* status_badge = lv_label_create(main_screen);
+    status_badge = lv_label_create(main_screen);
+    lv_obj_set_width(status_badge, 230);
+    lv_label_set_long_mode(status_badge, LV_LABEL_LONG_DOT);
     lv_label_set_text(status_badge, "[ ALL SYS OK ]");
     lv_obj_align(status_badge, LV_ALIGN_TOP_MID, 0, 12);
 
