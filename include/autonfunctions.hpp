@@ -8,6 +8,16 @@ extern pros::MotorGroup left_mg;
 extern pros::MotorGroup right_mg;
 extern pros::adi::Pneumatics claw;
 extern pros::MotorGroup lift;
+extern pros::Imu imu;
+
+// PID Functions (ported from 4478W_PushBack)
+double medianMotorPos();
+bool checkMotors(double error);
+bool checkMotorsInertial(double error);
+void drivePID(double target);          // motor degrees, positive = forward
+void turnPID(double target);           // relative degrees, positive = right
+void turntoPID(double targetHeading);  // absolute heading, 0-360
+void driveInch(double inches);         // inches, positive = forward
 
 // Simple Drivetrain Functions (Motor degrees or time)
 void driveForward(double degrees, int velocity = 100);

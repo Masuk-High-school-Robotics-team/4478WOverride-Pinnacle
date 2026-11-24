@@ -1,4 +1,5 @@
 #include "autons.hpp"
+#include "autonfunctions.hpp"
 
 
 
@@ -63,6 +64,36 @@ void vex_skills_slot4() {
 void recf_match_slot1() { 
     
     pros::lcd::set_text(1, "Running: RECF Match Slot 1"); 
+    cascadeUp(100);
+    driveInch(14.5);
+    turntoPID(89);
+    cascadeUp(800);
+    driveInch(26.5);
+    cascadeDown(800);
+    clawToggle();
+    pros::delay(650);
+    driveInch(-27.5);
+    cascadeDown(100);
+    turntoPID(177);
+
+    driveInch(16.25);
+    pros::delay(100);
+    clawToggle();
+    pros::delay(100);
+    cascadeUp(250);
+    driveInch(-16.5);
+    
+
+    turntoPID(88);
+    cascadeUp(1450);
+    pros::delay(250);
+    driveInch(26.6);
+    pros::delay(1000);
+    cascadeDown(770);
+    clawToggle();
+
+    driveInch(-7.6);
+    
 
 }
 
@@ -91,8 +122,10 @@ void recf_skills_slot1() {
     pros::lcd::set_text(1, "Running: RECF Skills Slot 1"); 
 
     driveForward(5, 100);
+    cascadeUp(600);
     pros::delay(2000);
     clawOpen();
+    pros::delay(2000);
     driveBackward(5, 100);
     
 

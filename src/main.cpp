@@ -1,4 +1,5 @@
 #include "main.h" // IWYU pragma: keep
+#include "autonfunctions.hpp"
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "autons.hpp"
 #include "lemlib/chassis/trackingWheel.hpp"
@@ -61,12 +62,8 @@ void competition_initialize() {}
 void autonomous() {
 	//run_selected_auton();
     //recf_skills_slot1();
-
+    recf_match_slot1();
     //this is for pid tuning
-    // set position to x:0, y:0, heading:0
-    chassis.setPose(0, 0, 0);
-    // turn to face heading 90 with a very long timeout
-    chassis.moveToPoint(0, 48, 100000);
 }
 
 /**
@@ -105,7 +102,7 @@ void opcontrol() {
         }
 
         // cascade lift control(hold L1 to go up hold L2 to go down)
-        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1) && lift.get_position() < 0) {
+        if (controller1.get_digital(E_CONTROLLER_DIGITAL_L1)) {
             lift.move(127);
         } else if (controller1.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             lift.move(-127);
